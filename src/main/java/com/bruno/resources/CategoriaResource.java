@@ -1,30 +1,27 @@
 package com.bruno.resources;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bruno.domain.Categoria;
+import com.bruno.service.CategoriaService;
 
 @RestController
 @RequestMapping(value="/categorias")
 public class CategoriaResource {
 
+	@Autowired
+	private CategoriaService categoriaService;
 	
-	@RequestMapping(method=RequestMethod.GET)
-	public List<Categoria> listar() {
+	@RequestMapping(value="/{id}",method=RequestMethod.GET)
+	public ResponseEntity<?> find(@PathVariable Long id) {
+		Categoria categoria = categoriaService.buscar(id);
 		
-		Categoria cat = new Categoria(1, "Informatica");
-		Categoria cat2 = new Categoria(2, "Escritorio");
-		
-		List<Categoria> lista= new ArrayList<>();
-		lista.add(cat);
-		lista.add(cat2);
-		
-		return lista;
+		return ResponseEntity.ok(categoria);
 	}
 	
 }

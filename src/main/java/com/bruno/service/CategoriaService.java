@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bruno.domain.Categoria;
 import com.bruno.repository.CategoriaRepository;
+import com.bruno.service.exception.ObjectNotFoundException;
 
 @Service
 public class CategoriaService {
@@ -13,7 +14,8 @@ public class CategoriaService {
 	private CategoriaRepository categoriaRepository;
 
 	public Categoria buscar(Long id) {
-		Categoria categoria= categoriaRepository.findById(id).orElse(null);
+		Categoria categoria= categoriaRepository.findById(id)
+				.orElseThrow(()-> new ObjectNotFoundException("Categoria não foi encontrada"));
 		return categoria;
 	}
 }

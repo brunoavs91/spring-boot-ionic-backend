@@ -10,8 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.bruno.domain.Categoria;
 import com.bruno.domain.Cidade;
+import com.bruno.domain.Cliente;
 import com.bruno.domain.Estado;
 import com.bruno.domain.Produto;
+import com.bruno.domain.enums.TipoCliente;
 import com.bruno.repository.CategoriaRepository;
 import com.bruno.repository.CidadeRepository;
 import com.bruno.repository.EstadoRepository;
@@ -65,6 +67,8 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		est1.setCidades(new ArrayList<>(Arrays.asList(c1)));
 		est2.setCidades(new ArrayList<>(Arrays.asList(c2,c3)));
+		
+		Cliente cli1= new Cliente(null,"Maria","maria@gmail.com", "23423423",TipoCliente.PESSOAFISICA);
 		
 		
 		estadoRepository.saveAll(Arrays.asList(est1,est2));

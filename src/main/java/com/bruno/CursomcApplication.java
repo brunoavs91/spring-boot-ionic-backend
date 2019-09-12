@@ -1,5 +1,6 @@
 package com.bruno;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -14,13 +15,20 @@ import com.bruno.domain.Cidade;
 import com.bruno.domain.Cliente;
 import com.bruno.domain.Endereco;
 import com.bruno.domain.Estado;
+import com.bruno.domain.Pagamento;
+import com.bruno.domain.PagamentoComBoleto;
+import com.bruno.domain.PagamentoComCartao;
+import com.bruno.domain.Pedido;
 import com.bruno.domain.Produto;
+import com.bruno.domain.enums.EstadoPagamento;
 import com.bruno.domain.enums.TipoCliente;
 import com.bruno.repository.CategoriaRepository;
 import com.bruno.repository.CidadeRepository;
 import com.bruno.repository.ClienteRepository;
 import com.bruno.repository.EnderecoRepository;
 import com.bruno.repository.EstadoRepository;
+import com.bruno.repository.PagamentoRepository;
+import com.bruno.repository.PedidoRepository;
 import com.bruno.repository.ProdutoRepository;
 
 @SpringBootApplication
@@ -43,6 +51,12 @@ public class CursomcApplication implements CommandLineRunner{
 	
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -97,6 +111,22 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		enderecoRepository.saveAll(Arrays.asList(e1,e2));
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		Pedido ped1 = new Pedido(null, sdf.parse("09/11/2019 10:32"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/09/2019 11:32"), cli1, e2);
+		
+		Pagamento pagto1 =  new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2018  00:00"),null);
+		
+		ped2.setPagamento(pagto2);
+		
+		cli1.setPedidos(new ArrayList<Pedido>(Arrays.asList(ped1,ped2)));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1,ped2));
+		
+		pagamentoRepository.saveAll(Arrays.asList(pagto1,pagto2));
 		
 	}
 

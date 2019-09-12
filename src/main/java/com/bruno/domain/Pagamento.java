@@ -3,6 +3,8 @@ package com.bruno.domain;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -14,13 +16,14 @@ import com.bruno.domain.enums.EstadoPagamento;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class Pagamento  implements Serializable{
+public abstract class Pagamento  implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	private Long id;
 
+	@Enumerated(EnumType.STRING)
 	private EstadoPagamento estadoPagamento;
 	
 	@OneToOne

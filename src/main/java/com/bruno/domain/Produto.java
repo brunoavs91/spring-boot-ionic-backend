@@ -21,6 +21,7 @@ import org.hibernate.mapping.Collection;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Produto implements Serializable {
@@ -36,12 +37,13 @@ public class Produto implements Serializable {
 	
 	private Double valor;
 	
-	@JsonBackReference
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "PRODUTO_CATEGORIA", joinColumns = @JoinColumn(name = "produto_id"),
 	inverseJoinColumns = @JoinColumn(name = "categoria_id"))
 	private List<Categoria> categorias;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="id.produto")
 	private Set<ItemPedido> itens =new HashSet<>();
 	
@@ -58,6 +60,7 @@ public class Produto implements Serializable {
 		this.valor=valor;
 	}
 
+	@JsonIgnore
 	public List<Pedido> getPedidos() {
 		List<Pedido> lista = new ArrayList<>();
 		if (!CollectionUtils.isEmpty(itens)) {

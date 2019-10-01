@@ -18,4 +18,8 @@ public class CategoriaService {
 				.orElseThrow(()-> new ObjectNotFoundException("Categoria não foi encontrada"));
 		return categoria;
 	}
+	
+	public Categoria insert(Categoria categoria) {
+		return categoriaRepository.save(categoria);
+	}
 }

@@ -13,7 +13,7 @@ public class ClienteService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 	
-	public Cliente buscar(Long id) {
+	public Cliente find(Long id) {
 		Cliente cliente= clienteRepository.findById(id)
 				.orElseThrow(()-> new ObjectNotFoundException("Categoria não foi encontrada"));
 		return cliente;

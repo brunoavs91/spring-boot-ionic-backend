@@ -1,5 +1,7 @@
 package com.bruno.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -41,5 +43,9 @@ public class CategoriaService {
 		} catch (DataIntegrityViolationException ex) {
 			throw new DataIntegrityException("Não e possivel exclui categoria com produtos associados");
 		}
+	}
+	public List<Categoria>findAll(){
+		
+		return categoriaRepository.findAll(); 
 	}
 }

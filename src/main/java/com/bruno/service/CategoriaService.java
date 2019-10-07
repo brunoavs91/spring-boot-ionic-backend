@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.bruno.domain.Categoria;
+import com.bruno.dto.CategoriaDTO;
 import com.bruno.repository.CategoriaRepository;
 import com.bruno.service.exception.DataIntegrityException;
 import com.bruno.service.exception.ObjectNotFoundException;
@@ -48,11 +49,13 @@ public class CategoriaService {
 		}
 	}
 	public List<Categoria>findAll(){
-		
 		return categoriaRepository.findAll(); 
 	}
 	
 	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
 		return categoriaRepository.findAll(PageRequest.of(page,linesPerPage,Direction.valueOf(direction), orderBy));
+	}
+	public Categoria fromDTO(CategoriaDTO categoriaDTO) {
+		return new Categoria(categoriaDTO.getId(),categoriaDTO.getNome());
 	}
 }

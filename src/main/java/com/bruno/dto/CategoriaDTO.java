@@ -2,6 +2,10 @@ package com.bruno.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.bruno.domain.Categoria;
 
 public class CategoriaDTO implements Serializable{
@@ -11,6 +15,8 @@ public class CategoriaDTO implements Serializable{
 
 	private Long id;
 	
+	@NotEmpty(message="Preenchimento obrigatorio")
+	@Length(min=5,max=80, message="O nome deve ter entre 5 a 80 caracteres")
 	private String nome;
 	
 	public CategoriaDTO() {

@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.bruno.domain.Categoria;
 import com.bruno.domain.Cliente;
+import com.bruno.dto.CategoriaDTO;
 import com.bruno.dto.ClienteDTO;
+import com.bruno.dto.ClienteNewDTO;
 import com.bruno.service.ClienteService;
 
 @RestController
@@ -85,6 +88,18 @@ public class ClienteResource {
 				
 		
 		return ResponseEntity.ok().body(listaDTO);
+	}
+	
+
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO clienteNewDTO){
+		
+		Cliente cliente=clienteService.fromDTO(clienteNewDTO);
+		cliente=clienteService.insert(cliente);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}").buildAndExpand(cliente.getId())
+				.toUri();
+		return ResponseEntity.created(uri).build();
 	}
 
 }

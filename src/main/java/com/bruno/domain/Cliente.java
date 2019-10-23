@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.CascadeType;
+
 import com.bruno.domain.enums.TipoCliente;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,7 +30,7 @@ public class Cliente implements Serializable{
 	private String cpfOuCnpj;
 	private TipoCliente tipo;
 	
-	@OneToMany(mappedBy="cliente")
+	@OneToMany(mappedBy="cliente",cascade=javax.persistence.CascadeType.ALL)
 	private List<Endereco> enderecos;
 	
 	@ElementCollection

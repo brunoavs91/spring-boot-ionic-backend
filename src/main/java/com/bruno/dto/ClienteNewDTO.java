@@ -2,6 +2,11 @@ package com.bruno.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.bruno.domain.enums.TipoCliente;
 
 public class ClienteNewDTO  implements Serializable{
@@ -9,17 +14,32 @@ public class ClienteNewDTO  implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
+	@NotEmpty(message="Preenchimento obrigatorio")
+	@Length(min=5, max=120, message="O tamanho deve ser entre 5 a 120 caracteres")
 	private String nome;
+	
+	@NotEmpty(message="Preenchimento obrigatorio")
+	@Email(message="Email Inváldo")
 	private String email;
+	
+	@NotEmpty(message="Preenchimento obrigatorio")
 	private String cpfOuCnpj;
+	
 	private TipoCliente tipoCliente;
 	
+	@NotEmpty(message="Preenchimento obrigatorio")
 	private String logradouro;
+	
 	private String numero;
+	
 	private String complemento;
+	
 	private String bairro;
+	
+	@NotEmpty(message="Preenchimento obrigatorio")
 	private String cep;
 	
+	@NotEmpty(message="Preenchimento obrigatorio")
 	private String telofone1;
 	private String telefone2;
 	private String telefone3;

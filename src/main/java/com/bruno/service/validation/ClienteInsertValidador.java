@@ -6,8 +6,10 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import com.bruno.domain.enums.TipoCliente;
 import com.bruno.dto.ClienteNewDTO;
 import com.bruno.resources.exception.FieldMessage;
+import com.bruno.service.validation.utils.BR;
 
 public class ClienteInsertValidador implements ConstraintValidator<ClienteInsert, ClienteNewDTO> {
 	@Override
@@ -18,11 +20,17 @@ public class ClienteInsertValidador implements ConstraintValidator<ClienteInsert
 	public boolean isValid(ClienteNewDTO objDto, ConstraintValidatorContext context) {
 		List<FieldMessage> list = new ArrayList<>();
 
-		// inclua os testes aqui, inserindo erros na lista
+		
+		if(objDto.getTipoCliente().equals(TipoCliente.PESSOAFISICA) && BR.isValidCPF(objDto.getCpfOuCnpj())) {
+			list.add(new FieldMessage("CpfOuCnpj", "CPF inválido"));
+		}
+		if(objDto.getTipoCliente().equals(TipoCliente.PESSOAJURIDICA) && BR.isValidCNPJ(objDto.getCpfOuCnpj())) {
+			list.add(new FieldMessage("CpfOuCnpj", "CNPJ inválido"));
+		}
 
 		for (FieldMessage e : list) {
 			context.disableDefaultConstraintViolation();
-			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName())
+			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldMessage())
 					.addConstraintViolation();
 		}
 		return list.isEmpty();

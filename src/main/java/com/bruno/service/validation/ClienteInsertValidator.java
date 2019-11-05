@@ -15,7 +15,7 @@ import com.bruno.repository.ClienteRepository;
 import com.bruno.resources.exception.FieldMessage;
 import com.bruno.service.validation.utils.BR;
 
-public class ClienteInsertValidador implements ConstraintValidator<ClienteInsert, ClienteNewDTO> {
+public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert, ClienteNewDTO> {
 	
 	@Autowired
 	private ClienteRepository clienteRepostory;

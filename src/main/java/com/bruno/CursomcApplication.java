@@ -81,16 +81,36 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		Produto p2 = new Produto(null, "Impressora", 800D);
 		Produto p3 = new Produto(null, "Mouse", 80D);
+		Produto p4 = new Produto(null, "Mesa de Escritorio", 80D);
+		Produto p5 = new Produto(null, "Toalha", 80D);
+		Produto p6 = new Produto(null, "Colcha", 80D);
+		Produto p7 = new Produto(null, "TV", 80D);
+		Produto p8 = new Produto(null, "Rocadeira", 80D);
+		Produto p9 = new Produto(null, "Abajour", 80D);
+		Produto p10 = new Produto(null, "Pendente", 80D);
+		Produto p11 = new Produto(null, "Shampoo", 80D);
+
+		cat1.setProdutos(new ArrayList<>(Arrays.asList(p1, p2, p3)));
+		cat2.setProdutos(new ArrayList<>(Arrays.asList(p2, p4)));
+		cat3.setProdutos(new ArrayList<>(Arrays.asList(p5, p6)));
+		cat4.setProdutos(new ArrayList<>(Arrays.asList(p1, p2, p3, p7)));
+		cat5.setProdutos(new ArrayList<>(Arrays.asList(p8)));
+		cat6.setProdutos(new ArrayList<>(Arrays.asList(p9, p10)));
+		cat7.setProdutos(new ArrayList<>(Arrays.asList(p11)));
 		
-		cat1.setProdutos(new ArrayList<>(Arrays.asList(p1,p2,p3)));
-		
-		cat2.setProdutos(new ArrayList<>(Arrays.asList(p2)));
-		
-		p1.setCategorias(new ArrayList<>(Arrays.asList(cat1)));
-		
-		p2.setCategorias(new ArrayList<>(Arrays.asList(cat1,cat2)));
-		
-		p3.setCategorias(new ArrayList<>(Arrays.asList(cat1)));
+		p1.setCategorias(new ArrayList<>(Arrays.asList(cat1, cat4)));
+
+		p2.setCategorias(new ArrayList<>(Arrays.asList(cat1, cat2, cat4)));
+
+		p3.setCategorias(new ArrayList<>(Arrays.asList(cat1, cat4)));
+		p4.setCategorias(new ArrayList<>(Arrays.asList(cat2)));
+		p5.setCategorias(new ArrayList<>(Arrays.asList(cat3)));
+		p6.setCategorias(new ArrayList<>(Arrays.asList(cat3)));
+		p7.setCategorias(new ArrayList<>(Arrays.asList(cat4)));
+		p8.setCategorias(new ArrayList<>(Arrays.asList(cat5)));
+		p9.setCategorias(new ArrayList<>(Arrays.asList(cat6)));
+		p10.setCategorias(new ArrayList<>(Arrays.asList(cat6)));
+		p11.setCategorias(new ArrayList<>(Arrays.asList(cat7)));
 		
 		Estado est1 = new Estado(null, "Minas Gerais");
 		Estado est2 = new Estado(null, "São Paulo");
@@ -115,7 +135,7 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		categoriaRepository.saveAll(Arrays.asList(cat1,cat2,cat3,cat4,cat5,cat6,cat7));
 		
-		produtoRepository.saveAll(Arrays.asList(p1,p2,p3));
+		produtoRepository.saveAll(Arrays.asList(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11));
 		
 		clienteRepository.save(cli1);
 		

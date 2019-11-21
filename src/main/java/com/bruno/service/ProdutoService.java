@@ -1,7 +1,5 @@
 package com.bruno.service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import com.bruno.domain.Categoria;
 import com.bruno.domain.Produto;
 import com.bruno.repository.CategoriaRepository;
 import com.bruno.repository.ProdutoRepository;
+import com.bruno.service.exception.ObjectNotFoundException;
 
 	
 
@@ -25,6 +24,13 @@ public class ProdutoService {
 	
 	@Autowired
 	private CategoriaRepository categoriaRepository;
+	
+	public Produto buscar(Long id) {
+		Produto produto = produtoRepository.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("O produto " + id + "não foi encontrado"));
+		return produto;
+	}
+	
 
 	public Page<Produto> search(String nome,List<Long>ids,Integer page, Integer linesPerPage, String orderBy, String direction) {
 		PageRequest pageRequest = new PageRequest(page,linesPerPage,Direction.valueOf(direction), orderBy);

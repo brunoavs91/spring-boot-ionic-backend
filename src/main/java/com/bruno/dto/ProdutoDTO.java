@@ -2,6 +2,8 @@ package com.bruno.dto;
 
 import java.io.Serializable;
 
+import com.bruno.domain.Produto;
+
 public class ProdutoDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -15,6 +17,13 @@ public class ProdutoDTO implements Serializable {
 	public ProdutoDTO() {
 		
 	}
+	
+	public ProdutoDTO(Produto produto) {
+		id= produto.getId();
+		nome = produto.getNome();
+		valor = produto.getValor();
+	}
+	
 
 	public Integer getId() {
 		return id;

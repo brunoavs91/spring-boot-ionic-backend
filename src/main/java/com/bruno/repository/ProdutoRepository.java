@@ -16,6 +16,7 @@ import com.bruno.domain.Produto;
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 	
 	
+	//Se quiser pode tirar o Query param ,vai funcionar por causa da nomeclatura spring
 	@Query("SELECT DISTINCT obj FROM Produto obj INNER JOIN obj.categorias cat WHERE obj.nome LIKE %:nome% AND cat IN :categorias")
 	Page<Produto> findDistinctByNomeContainingAndCategoriasIn(@Param("nome") String nome, @Param("categorias") List<Categoria> categorias,
 			Pageable pageRequest);

@@ -34,6 +34,9 @@ public class PedidoService {
 	
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public Pedido buscar(Long id) {
 		Pedido pedido = pedidoRepository.findById(id)
@@ -59,6 +62,7 @@ public class PedidoService {
 					.map(Produto::getValor).get());
 		}
 		itemPedidoRepository.saveAll(pedido.getItens());
+		emailService.sendOrderConfigurationEmail(pedido);
 		return pedido;
 	}
 }

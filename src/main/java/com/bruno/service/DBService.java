@@ -118,7 +118,7 @@ public class DBService {
 		est1.setCidades(new ArrayList<>(Arrays.asList(c1)));
 		est2.setCidades(new ArrayList<>(Arrays.asList(c2,c3)));
 		
-		Cliente cli1= new Cliente(null,"Maria","maria@gmail.com", "23423423",TipoCliente.PESSOAFISICA);
+		Cliente cli1= new Cliente(null,"Maria","brunoav91@gmail.com", "23423423",TipoCliente.PESSOAFISICA);
 		cli1.setTelefones(new HashSet<>(Arrays.asList("99999994","998989899")));
 		
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "32323232", cli1, c1);

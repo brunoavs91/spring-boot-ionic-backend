@@ -27,7 +27,7 @@ public abstract class AbstractEmailService implements EmailService {
 		sm.setSentDate(new Date(System.currentTimeMillis()));
 		sm.setText(pedido.toString());
 		
-		return null;
+		return sm;
 	}
 	
 

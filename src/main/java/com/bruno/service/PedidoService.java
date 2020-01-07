@@ -3,6 +3,8 @@ package com.bruno.service;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,16 +39,25 @@ public class PedidoService {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private ClienteService clienteService;
+	
+	@Autowired
+
+	private ProdutoService produtoService;
 
 	public Pedido buscar(Long id) {
 		Pedido pedido = pedidoRepository.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("O pedido " + id + "não foi encontrado"));
 		return pedido;
 	}
+	@Transactional
 	public Pedido insert (Pedido pedido) {
 		
 		pedido.setId(null);
 		pedido.setInstante(new Date());
+		pedido.setCliente(clienteService.find(pedido.getCliente().getId()));
 		pedido.getPagamento().setEstadoPagamento(EstadoPagamento.PENDENTE);
 		if(pedido.getPagamento() instanceof PagamentoComBoleto) {
 			PagamentoComBoleto pagto =(PagamentoComBoleto) pedido.getPagamento();
@@ -57,9 +68,8 @@ public class PedidoService {
 		
 		for(ItemPedido item : pedido.getItens()) {
 			item.setDesconto(0.0);
-			item.setPreco(produtoRepository.findById(item.getProduto().getId())
-					.filter(Objects::nonNull)
-					.map(Produto::getValor).get());
+			item.setProduto(produtoService.buscar(item.getProduto().getId()));
+			item.setPreco(item.getProduto().getValor());
 		}
 		itemPedidoRepository.saveAll(pedido.getItens());
 		emailService.sendOrderConfigurationEmail(pedido);

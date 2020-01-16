@@ -20,11 +20,11 @@ public interface EmailService {
 	 */
 	void sendEmail(SimpleMailMessage msg);
 	
-	/**
-	 * Confirmar Email HTML
-	 * @param obj
-	 */
-	void sendOrderConfirmationHtmlEmail(Pedido obj);
+//	/**
+//	 * Confirmar Email HTML
+//	 * @param obj
+//	 */
+//	void sendOrderConfirmationHtmlEmail(Pedido obj);
 
 	/**
 	 * enviar email html

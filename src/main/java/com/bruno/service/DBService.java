@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.bruno.domain.Categoria;
@@ -61,6 +62,9 @@ public class DBService {
 	
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	
 
 	public void instantiateTestDataBase() throws Exception {
@@ -118,7 +122,7 @@ public class DBService {
 		est1.setCidades(new ArrayList<>(Arrays.asList(c1)));
 		est2.setCidades(new ArrayList<>(Arrays.asList(c2,c3)));
 		
-		Cliente cli1= new Cliente(null,"Maria","brunoav91@gmail.com", "23423423",TipoCliente.PESSOAFISICA);
+		Cliente cli1= new Cliente(null,"Maria","brunoav91@gmail.com", "23423423",TipoCliente.PESSOAFISICA,passwordEncoder.encode("123"));
 		cli1.setTelefones(new HashSet<>(Arrays.asList("99999994","998989899")));
 		
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "32323232", cli1, c1);

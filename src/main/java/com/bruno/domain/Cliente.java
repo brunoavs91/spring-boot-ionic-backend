@@ -1,19 +1,23 @@
 package com.bruno.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.CascadeType;
-
+import com.bruno.domain.enums.Perfil;
 import com.bruno.domain.enums.TipoCliente;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,6 +32,7 @@ public class Cliente implements Serializable{
 	private String nome;
 	private String email;
 	private String cpfOuCnpj;
+	@Enumerated(EnumType.STRING)
 	private TipoCliente tipo;
 	@JsonIgnore
 	private String senha;
@@ -39,12 +44,16 @@ public class Cliente implements Serializable{
 	@CollectionTable(name="TELEFONE")
 	private Set<String> telefones;
 	
+	@ElementCollection(fetch=FetchType.EAGER)
+	@CollectionTable(name="PERFIS")
+	private Set<Integer> perfis = new HashSet<>();
+	
 	@JsonIgnore
 	@OneToMany(mappedBy="cliente")
 	private List<Pedido> pedidos;
 	
 	public Cliente() {
-		
+		addPerfil(Perfil.CLIENTE);
 	}
 
 	public Cliente(Long id, String nome, String email, String cpfOuCnpj, TipoCliente tipo,String senha) {
@@ -55,6 +64,7 @@ public class Cliente implements Serializable{
 		this.cpfOuCnpj = cpfOuCnpj;
 		this.tipo = tipo;
 		this.senha= senha;
+		addPerfil(Perfil.CLIENTE);
 	}
 
 	public Long getId() {
@@ -99,6 +109,13 @@ public class Cliente implements Serializable{
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+	
+	public Set<Perfil> getPerfis() {
+		return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
+	}
+	public void addPerfil(Perfil perfil) {
+		this.perfis.add(perfil.getCod());
 	}
 
 	public void setTipo(TipoCliente tipo) {

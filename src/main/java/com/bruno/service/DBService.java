@@ -22,6 +22,7 @@ import com.bruno.domain.PagamentoComCartao;
 import com.bruno.domain.Pedido;
 import com.bruno.domain.Produto;
 import com.bruno.domain.enums.EstadoPagamento;
+import com.bruno.domain.enums.Perfil;
 import com.bruno.domain.enums.TipoCliente;
 import com.bruno.repository.CategoriaRepository;
 import com.bruno.repository.CidadeRepository;
@@ -125,10 +126,18 @@ public class DBService {
 		Cliente cli1= new Cliente(null,"Maria","brunoav91@gmail.com", "23423423",TipoCliente.PESSOAFISICA,passwordEncoder.encode("123"));
 		cli1.setTelefones(new HashSet<>(Arrays.asList("99999994","998989899")));
 		
+		Cliente cli2= new Cliente(null,"Joao","brunobh91@gmail.com", "234267423",TipoCliente.PESSOAFISICA,passwordEncoder.encode("123"));
+		cli2.setTelefones(new HashSet<>(Arrays.asList("99999994","998989899")));
+		cli2.addPerfil(Perfil.ADMIN);
+		
+		
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "32323232", cli1, c1);
 		Endereco e2 = new Endereco(null,"Avenida Mtos","105","Sala 800", "Centro", "31223244", cli1, c2);
+		Endereco e3 = new Endereco(null,"Avenida Doida","104","Apto 402", "Centro", "31226244", cli2, c2);
 		
 		cli1.setEnderecos(new ArrayList<>(Arrays.asList(e1,e2)));
+		cli2.setEnderecos(new ArrayList<>(Arrays.asList(e3)));
+		
 		estadoRepository.saveAll(Arrays.asList(est1,est2));
 		cidadeRepository.saveAll(Arrays.asList(c1,c2,c3));
 		
@@ -137,9 +146,9 @@ public class DBService {
 		
 		produtoRepository.saveAll(Arrays.asList(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11));
 		
-		clienteRepository.save(cli1);
+		clienteRepository.saveAll(Arrays.asList(cli1,cli2));
 		
-		enderecoRepository.saveAll(Arrays.asList(e1,e2));
+		enderecoRepository.saveAll(Arrays.asList(e1,e2,e3));
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 		Pedido ped1 = new Pedido(null, sdf.parse("09/11/2019 10:32"), cli1, e1);

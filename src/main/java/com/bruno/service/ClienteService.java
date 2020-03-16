@@ -13,11 +13,14 @@ import org.springframework.stereotype.Service;
 import com.bruno.domain.Cidade;
 import com.bruno.domain.Cliente;
 import com.bruno.domain.Endereco;
+import com.bruno.domain.enums.Perfil;
 import com.bruno.dto.ClienteDTO;
 import com.bruno.dto.ClienteNewDTO;
 import com.bruno.repository.CidadeRepository;
 import com.bruno.repository.ClienteRepository;
 import com.bruno.repository.EnderecoRepository;
+import com.bruno.security.UserSS;
+import com.bruno.service.exception.AuthorizationException;
 import com.bruno.service.exception.DataIntegrityException;
 import com.bruno.service.exception.ObjectNotFoundException;
 
@@ -37,6 +40,13 @@ public class ClienteService {
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	public Cliente find(Long id) {
+		
+		UserSS user = UserService.authenticated();
+		
+		if(user == null || !user.hasHole(Perfil.ADMIN) && id.equals(user.getId())) {
+			
+			throw new AuthorizationException("Acesso negado");
+		}
 		Cliente cliente= clienteRepository.findById(id)
 				.orElseThrow(()-> new ObjectNotFoundException("Categoria não foi encontrada"));
 		return cliente;

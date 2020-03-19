@@ -1,22 +1,27 @@
 package com.bruno.service;
 
 import java.util.Date;
-import java.util.Objects;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.bruno.domain.Cliente;
 import com.bruno.domain.ItemPedido;
 import com.bruno.domain.PagamentoComBoleto;
 import com.bruno.domain.Pedido;
-import com.bruno.domain.Produto;
 import com.bruno.domain.enums.EstadoPagamento;
+import com.bruno.repository.ClienteRepository;
 import com.bruno.repository.ItemPedidoRepository;
 import com.bruno.repository.PagamentoRepository;
 import com.bruno.repository.PedidoRepository;
 import com.bruno.repository.ProdutoRepository;
+import com.bruno.security.UserSS;
+import com.bruno.service.exception.AuthorizationException;
 import com.bruno.service.exception.ObjectNotFoundException;
 
 @Service
@@ -42,6 +47,9 @@ public class PedidoService {
 	
 	@Autowired
 	private ClienteService clienteService;
+	
+	@Autowired
+	private ClienteRepository clienteRepository;
 	
 	@Autowired
 
@@ -75,4 +83,19 @@ public class PedidoService {
 		emailService.sendOrderConfigurationEmail(pedido);
 		return pedido;
 	}
+	
+	public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+		
+		UserSS user = UserService.authenticated();
+		if(user == null) {
+			throw new AuthorizationException("Acesso Negado");
+		}
+		@SuppressWarnings("deprecation")
+		PageRequest pageRequest = new PageRequest(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Cliente cliente = clienteRepository.findById(user.getId())
+				.orElseThrow(() -> new ObjectNotFoundException("Usuario nao encontrado"));
+	
+		return pedidoRepository.findByCliente(cliente, pageRequest);
+	}
+	
 }

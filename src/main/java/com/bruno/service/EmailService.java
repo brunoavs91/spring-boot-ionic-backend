@@ -4,6 +4,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.SimpleMailMessage;
 
+import com.bruno.domain.Cliente;
 import com.bruno.domain.Pedido;
 
 public interface EmailService {
@@ -31,5 +32,12 @@ public interface EmailService {
 	 * @param msg
 	 */
 	void sendHtmlEmail(MimeMessage msg);
+	
+	/**
+	 * Enviar novo password 
+	 * @param cliente
+	 * @param newPass
+	 */
+	void sendNewPasswordEmail(Cliente cliente, String newPass);
 
 }

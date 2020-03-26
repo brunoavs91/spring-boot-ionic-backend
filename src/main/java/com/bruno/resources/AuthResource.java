@@ -26,4 +26,14 @@ public class AuthResource {
 		response.addHeader("Authorization", "Bearer " + token);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@RequestMapping(value = "/forgot", method = RequestMethod.POST)
+	public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
+		UserSS user = UserService.authenticated();
+		String token = jwtUtil.generateToken(user.getUsername());
+		response.addHeader("Authorization", "Bearer " + token);
+		return ResponseEntity.noContent().build();
+	}
+	
+	
 }

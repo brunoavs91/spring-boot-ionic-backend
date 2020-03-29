@@ -42,7 +42,7 @@ public class AuthService {
 
 	private String newPassWord() {
 		char[] vet = new char[10];
-		for(int i =0; i<10; i++) {
+		for (int i = 0; i < 10; i++) {
 			vet[i] = randomChar();
 		}
 		return new String(vet);
@@ -52,13 +52,14 @@ public class AuthService {
 		int opt = random.nextInt(3);
 		// gera um digito baseado no unicode
 		if (opt == 0) {
+			// gerar um numero aletorio de 0 a 9 e somar com 48 codigo do 0
 			return (char) (random.nextInt(10) + 48);
 		}
 		// gera letra maiuscula
 		else if (opt == 1) {
 			return (char) (random.nextInt(26) + 65);
-			
-		} else {//letra minuscula
+
+		} else {// letra minuscula
 			return (char) (random.nextInt(26) + 97);
 		}
 

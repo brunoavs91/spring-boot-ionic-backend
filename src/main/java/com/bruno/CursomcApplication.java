@@ -32,10 +32,13 @@ import com.bruno.repository.ItemPedidoRepository;
 import com.bruno.repository.PagamentoRepository;
 import com.bruno.repository.PedidoRepository;
 import com.bruno.repository.ProdutoRepository;
+import com.bruno.service.S3Service;
 
 @SpringBootApplication
 public class CursomcApplication implements CommandLineRunner{
 
+	@Autowired
+	private S3Service s3Service;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -43,7 +46,7 @@ public class CursomcApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
-	
+	s3Service.uploadFile("D:\\Materiais_projeto_Ionic\\fotosUpload\\Kira.jpg");
 	}
 
 }

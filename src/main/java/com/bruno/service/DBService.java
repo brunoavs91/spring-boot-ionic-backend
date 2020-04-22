@@ -125,10 +125,10 @@ public class DBService {
 		
 		Cliente cli1= new Cliente(null,"Maria","brunoav91@gmail.com", "23423423",TipoCliente.PESSOAFISICA,passwordEncoder.encode("123"));
 		cli1.setTelefones(new HashSet<>(Arrays.asList("99999994","998989899")));
-		
+		cli1.addPerfil(Perfil.ADMIN);
 		Cliente cli2= new Cliente(null,"Joao","brunobh91@gmail.com", "234267423",TipoCliente.PESSOAFISICA,passwordEncoder.encode("123"));
 		cli2.setTelefones(new HashSet<>(Arrays.asList("99999994","998989899")));
-		cli2.addPerfil(Perfil.ADMIN);
+		cli2.addPerfil(Perfil.CLIENTE);
 		
 		
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "32323232", cli1, c1);

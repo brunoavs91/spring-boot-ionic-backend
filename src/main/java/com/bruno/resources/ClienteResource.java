@@ -25,80 +25,79 @@ import com.bruno.dto.ClienteNewDTO;
 import com.bruno.service.ClienteService;
 
 @RestController
-@RequestMapping(value="/clientes")
+@RequestMapping(value = "/clientes")
 public class ClienteResource {
-	
+
 	@Autowired
 	private ClienteService clienteService;
-	
-	@RequestMapping(value="/{id}",method=RequestMethod.GET)
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Cliente> find(@PathVariable Long id) {
 		Cliente cliente = clienteService.find(id);
-		
+
 		return ResponseEntity.ok().body(cliente);
 	}
-	
 
-	@RequestMapping(value="/{id}",method=RequestMethod.PUT)
-	public ResponseEntity<Void> update(@Valid @RequestBody ClienteDTO categoriaDTO,@PathVariable Long id){
-		
-		Cliente cliente=clienteService.fromDTO(categoriaDTO);
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Void> update(@Valid @RequestBody ClienteDTO categoriaDTO, @PathVariable Long id) {
+
+		Cliente cliente = clienteService.fromDTO(categoriaDTO);
 		cliente.setId(id);
-		cliente=clienteService.update(cliente);
-		
+		cliente = clienteService.update(cliente);
+
 		return ResponseEntity.noContent().build();
 	}
-	
+
 	@PreAuthorize("hasAnyRole('ADMIN')")
-	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
-	public ResponseEntity<Void> delete(@PathVariable Long id){
-		
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+
 		clienteService.delete(id);
-		
+
 		return ResponseEntity.noContent().build();
 	}
-	
+
 	@PreAuthorize("hasAnyRole('ADMIN')")
-	@RequestMapping(method=RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<ClienteDTO>> findAll() {
 		List<Cliente> lista = clienteService.findAll();
-		List<ClienteDTO>listaDTO=lista.stream()
-				.map(cli->new ClienteDTO(cli)).collect(Collectors.toList());
-		
-		return ResponseEntity.ok().body(listaDTO);
-	}
-	
-	@PreAuthorize("hasAnyRole('ADMIN')")
-	@RequestMapping(value="/page", method=RequestMethod.GET)
-	public ResponseEntity<Page<ClienteDTO>> findPage(
-			@RequestParam(value="page",defaultValue="0") Integer page,
-			@RequestParam(value="linesPerPage",defaultValue="24") Integer linesPerPage,
-			@RequestParam(value="orderBy",defaultValue="nome") String orderBy,
-			@RequestParam(value="direction",defaultValue="ASC") String direction) {
-		Page<Cliente> lista = clienteService.findPage(page, linesPerPage, orderBy, direction);
-		Page<ClienteDTO>listaDTO=lista.map(cat -> new ClienteDTO(cat));
-				
-		
-		return ResponseEntity.ok().body(listaDTO);
-	}
-	
+		List<ClienteDTO> listaDTO = lista.stream().map(cli -> new ClienteDTO(cli)).collect(Collectors.toList());
 
-	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO clienteNewDTO){
-		
-		Cliente cliente=clienteService.fromDTO(clienteNewDTO);
-		cliente=clienteService.insert(cliente);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}").buildAndExpand(cliente.getId())
+		return ResponseEntity.ok().body(listaDTO);
+	}
+
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	@RequestMapping(value = "/page", method = RequestMethod.GET)
+	public ResponseEntity<Page<ClienteDTO>> findPage(@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "linesPerPage", defaultValue = "24") Integer linesPerPage,
+			@RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
+			@RequestParam(value = "direction", defaultValue = "ASC") String direction) {
+		Page<Cliente> lista = clienteService.findPage(page, linesPerPage, orderBy, direction);
+		Page<ClienteDTO> listaDTO = lista.map(cat -> new ClienteDTO(cat));
+
+		return ResponseEntity.ok().body(listaDTO);
+	}
+
+	@RequestMapping(method = RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO clienteNewDTO) {
+
+		Cliente cliente = clienteService.fromDTO(clienteNewDTO);
+		cliente = clienteService.insert(cliente);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId())
 				.toUri();
 		return ResponseEntity.created(uri).build();
 	}
+ 
 	
-	@RequestMapping(value = "/picture", method = RequestMethod.POST)
-	public ResponseEntity<Void> uploadProfilePicture(@RequestParam(name = "file") MultipartFile file) {
+	@RequestMapping(value = "/picture", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+	public ResponseEntity<Void> uploadProfilePicture(@RequestParam(name ="file") MultipartFile file) {
 
+		
 		URI uri = clienteService.uploadProfilePicture(file);
 		return ResponseEntity.created(uri).build();
 	}
 
+	
+	 
+	 
 }

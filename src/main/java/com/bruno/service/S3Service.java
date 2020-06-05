@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.bruno.service.exception.FileException;
 
@@ -32,19 +33,20 @@ public class S3Service {
 		try {
 			String fileName = multipartFile.getOriginalFilename();
 			InputStream is;
+			byte[] bytes = multipartFile.getBytes();
 			is = multipartFile.getInputStream();
 			String contentType = multipartFile.getContentType();
-			return uploadFile(is, fileName, contentType);
+			return uploadFile(is, fileName, contentType, bytes);
 		} catch (IOException e) {
 			throw new FileException("Erro de IO " + e.getMessage());
 		}
-			
 
 	}
 
-	public URI uploadFile(InputStream is, String fileName, String contentType) {
+	public URI uploadFile(InputStream is, String fileName, String contentType, byte... bytes) {
 		try {
 			ObjectMetadata meta = new ObjectMetadata();
+			meta.setContentLength(bytes.length);
 			meta.setContentType(contentType);
 
 			LOG.info("Iniciando upload ...");
@@ -53,6 +55,8 @@ public class S3Service {
 			return s3client.getUrl(bucketName, fileName).toURI();
 		} catch (URISyntaxException e) {
 			throw new FileException("Erro ao converter URL para URI");
+		} catch (AmazonS3Exception ex) {
+			throw new AmazonS3Exception(ex.getMessage());
 		}
 
 	}

@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.bruno.security.UserSS;
 
 public class UserService {
-	
+	//pega usuario autenticado
 	public static UserSS authenticated() {
 		try {
 

@@ -2,6 +2,7 @@ package com.bruno.service;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -119,7 +120,20 @@ public class ClienteService {
 	}
 	
 	public URI uploadProfilePicture(MultipartFile multipartFile) {
-		return s3Service.uploadFile(multipartFile);
+
+		UserSS user = UserService.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+
+		URI uri = s3Service.uploadFile(multipartFile);
+		Cliente cliente = clienteRepository.findById(user.getId())
+				.orElseThrow(() -> new ObjectNotFoundException("Cliente nao encontrado"));
+
+		cliente.setImageURL(uri.toString());
+		clienteRepository.save(cliente);
+
+		return uri;
 	}
 	
 }

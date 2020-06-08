@@ -1,10 +1,12 @@
 package com.bruno.service;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,6 +46,12 @@ public class ClienteService {
 	
 	@Autowired
 	private S3Service s3Service;
+	
+	@Autowired
+	private ImageService imageService;
+	
+	@Value("${img.prefix.client.profile}")
+	private String prefixo;
 	
 	public Cliente find(Long id) {
 		
@@ -125,15 +133,21 @@ public class ClienteService {
 		if (user == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
+		//criando um nome fixo para os arquivos de imagem
+		BufferedImage jpgImage = imageService.getJpgImageFromFile(multipartFile);
+		String fileName = prefixo + user.getId() + ".jpg";
+		
+		return s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName,"image");
 
-		URI uri = s3Service.uploadFile(multipartFile);
-		Cliente cliente = clienteRepository.findById(user.getId())
-				.orElseThrow(() -> new ObjectNotFoundException("Cliente nao encontrado"));
-
-		cliente.setImageURL(uri.toString());
-		clienteRepository.save(cliente);
-
-		return uri;
+//		URI uri = s3Service.uploadFile(multipartFile);
+//		Cliente cliente = clienteRepository.findById(user.getId())
+//				.orElseThrow(() -> new ObjectNotFoundException("Cliente nao encontrado"));
+//
+//		//Se quiser guardar a URL na tabela cliente so voltar o codigo anterior
+////		cliente.setImageURL(uri.toString());
+//		clienteRepository.save(cliente);
+//
+//		return uri;
 	}
 	
 }

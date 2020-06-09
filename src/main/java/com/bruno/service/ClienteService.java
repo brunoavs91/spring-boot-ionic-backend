@@ -1,6 +1,8 @@
 package com.bruno.service;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.util.Pair;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +30,7 @@ import com.bruno.repository.EnderecoRepository;
 import com.bruno.security.UserSS;
 import com.bruno.service.exception.AuthorizationException;
 import com.bruno.service.exception.DataIntegrityException;
+import com.bruno.service.exception.FileException;
 import com.bruno.service.exception.ObjectNotFoundException;
 
 @Service
@@ -52,6 +56,9 @@ public class ClienteService {
 	
 	@Value("${img.prefix.client.profile}")
 	private String prefixo;
+	
+	@Value("${img.profile.size}")
+	private Integer size;
 	
 	public Cliente find(Long id) {
 		
@@ -126,19 +133,25 @@ public class ClienteService {
 		cliente.setNome(clienteDadosNovos.getNome());
 		cliente.setEmail(clienteDadosNovos.getEmail());
 	}
-	
+
 	public URI uploadProfilePicture(MultipartFile multipartFile) {
 
 		UserSS user = UserService.authenticated();
 		if (user == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
-		//criando um nome fixo para os arquivos de imagem
+		// criando um nome fixo para os arquivos de imagem
 		BufferedImage jpgImage = imageService.getJpgImageFromFile(multipartFile);
+		jpgImage = imageService.cropSquare(jpgImage);
+		jpgImage = imageService.resize(jpgImage, size);
+
 		String fileName = prefixo + user.getId() + ".jpg";
 		
-		return s3Service.uploadFile(imageService.getInputStream(jpgImage, "jpg"), fileName,"image");
+		Pair<InputStream, byte[]> pair = imageService.getInputStream(jpgImage, "jpg");
 
+		return s3Service.uploadFile(pair.getFirst(), fileName, "image", pair.getSecond());
+
+		
 //		URI uri = s3Service.uploadFile(multipartFile);
 //		Cliente cliente = clienteRepository.findById(user.getId())
 //				.orElseThrow(() -> new ObjectNotFoundException("Cliente nao encontrado"));

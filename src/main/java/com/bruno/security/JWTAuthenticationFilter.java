@@ -68,7 +68,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         
         response.addHeader("Authorization " , "Bearer " + token);
       
-
+        //liberando 
         response.addHeader("access-control-expose-headers" , "Authorization");
 	}
 

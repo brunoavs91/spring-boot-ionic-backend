@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,8 +20,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@JsonIgnoreProperties(allowSetters = true, value = {"cliente"})
 public class Pedido  implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -37,7 +41,7 @@ public class Pedido  implements Serializable{
 	private Pagamento pagamento;
 	
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="cliente_id")
 	private Cliente cliente;
 	
@@ -88,11 +92,12 @@ public class Pedido  implements Serializable{
 	public void setPagamento(Pagamento pagamento) {
 		this.pagamento = pagamento;
 	}
-
+	
 	public Cliente getCliente() {
 		return cliente;
 	}
-
+	
+	
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}

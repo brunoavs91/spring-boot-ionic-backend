@@ -38,52 +38,51 @@ public class ClienteService {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
-	
+
 	@Autowired
 	private CidadeRepository cidadeRepository;
-	
+
 	@Autowired
 	private EnderecoRepository enderecoRepository;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	private S3Service s3Service;
-	
+
 	@Autowired
 	private ImageService imageService;
-	
+
 	@Value("${img.prefix.client.profile}")
 	private String prefixo;
-	
+
 	@Value("${img.profile.size}")
 	private Integer size;
-	
+
 	public Cliente find(Long id) {
-		
+
 		UserSS user = UserService.authenticated();
-		
-		if(user == null || !user.hasHole(Perfil.ADMIN) && id.equals(user.getId())) {
-			
+
+		if (user == null || !user.hasHole(Perfil.ADMIN) && id.equals(user.getId())) {
+
 			throw new AuthorizationException("Acesso negado");
 		}
-		Cliente cliente= clienteRepository.findById(id)
-				.orElseThrow(()-> new ObjectNotFoundException("Categoria não foi encontrada"));
+		Cliente cliente = clienteRepository.findById(id)
+				.orElseThrow(() -> new ObjectNotFoundException("Categoria não foi encontrada"));
 		return cliente;
 	}
-	
-	
+
 	public Cliente insert(Cliente cliente) {
-		cliente=clienteRepository.save(cliente);
+		cliente = clienteRepository.save(cliente);
 		enderecoRepository.saveAll(cliente.getEnderecos());
 		return cliente;
 	}
-	
+
 	public Cliente update(Cliente cliente) {
 
-		Cliente clienteBanco =find(cliente.getId());
-		atualizarCliente(clienteBanco,cliente);
+		Cliente clienteBanco = find(cliente.getId());
+		atualizarCliente(clienteBanco, cliente);
 
 		return clienteRepository.save(clienteBanco);
 
@@ -98,35 +97,45 @@ public class ClienteService {
 			throw new DataIntegrityException("Não e possivel exclui porque a propiedades  associadas");
 		}
 	}
-	public List<Cliente>findAll(){
-		return clienteRepository.findAll(); 
+
+	public List<Cliente> findAll() {
+		return clienteRepository.findAll();
 	}
-	
-	public Cliente findByEmail(String email) {
+
+	public ClienteDTO findByEmail(String email) {
 		UserSS user = UserService.authenticated();
 
 		if (user == null || !user.hasHole(Perfil.ADMIN) && email.equals(user.getUsername())) {
 
 			throw new AuthorizationException("Acesso negado");
 		}
+//		Cliente cliente = clienteRepository.buscarClientePorEmail(email)
+//				.orElseThrow(() -> new ObjectNotFoundException("Objeto nao encontrado:" + user.getId()));
 		Cliente cliente = clienteRepository.findByEmail(email);
-		if (cliente == null) {
+		if(cliente == null) {
 			throw new ObjectNotFoundException("Objeto nao encontrado:" + user.getId());
 		}
 
-		return cliente;
+		return fromCliente(cliente);
 
 	}
-	
+
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		return clienteRepository.findAll(PageRequest.of(page,linesPerPage,Direction.valueOf(direction), orderBy));
+		return clienteRepository.findAll(PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy));
 	}
+
 	public Cliente fromDTO(ClienteDTO clienteDTO) {
-		return new Cliente(clienteDTO.getId(),clienteDTO.getNome() , clienteDTO.getEmail(),null, null,null);
+		return new Cliente(clienteDTO.getId(), clienteDTO.getNome(), clienteDTO.getEmail(), null, null, null);
 	}
-	
+
+	public ClienteDTO fromCliente(Cliente cliente) {
+
+		return new ClienteDTO(cliente);
+	}
+
 	public Cliente fromDTO(ClienteNewDTO clienteNewDTO) {
-		Cliente clie = new Cliente(null, clienteNewDTO.getNome(), clienteNewDTO.getEmail(), null, null,passwordEncoder.encode(clienteNewDTO.getSenha()));
+		Cliente clie = new Cliente(null, clienteNewDTO.getNome(), clienteNewDTO.getEmail(), null, null,
+				passwordEncoder.encode(clienteNewDTO.getSenha()));
 
 		Cidade cid = cidadeRepository.findById(clienteNewDTO.getCidadeId()).orElseThrow(null);
 		Endereco end = new Endereco(null, clienteNewDTO.getLogradouro(), clienteNewDTO.getNumero(),
@@ -144,8 +153,8 @@ public class ClienteService {
 		return clie;
 
 	}
-	
-	private void atualizarCliente(Cliente cliente,Cliente clienteDadosNovos) {
+
+	private void atualizarCliente(Cliente cliente, Cliente clienteDadosNovos) {
 		cliente.setNome(clienteDadosNovos.getNome());
 		cliente.setEmail(clienteDadosNovos.getEmail());
 	}
@@ -162,12 +171,11 @@ public class ClienteService {
 		jpgImage = imageService.resize(jpgImage, size);
 
 		String fileName = prefixo + user.getId() + ".jpg";
-		
+
 		Pair<InputStream, byte[]> pair = imageService.getInputStream(jpgImage, "jpg");
 
 		return s3Service.uploadFile(pair.getFirst(), fileName, "image", pair.getSecond());
 
-		
 //		URI uri = s3Service.uploadFile(multipartFile);
 //		Cliente cliente = clienteRepository.findById(user.getId())
 //				.orElseThrow(() -> new ObjectNotFoundException("Cliente nao encontrado"));
@@ -178,5 +186,5 @@ public class ClienteService {
 //
 //		return uri;
 	}
-	
+
 }

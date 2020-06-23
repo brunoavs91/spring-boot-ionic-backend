@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,12 +38,11 @@ public class ClienteResource {
 
 		return ResponseEntity.ok().body(cliente);
 	}
-	
-	@RequestMapping(value = "/email", method = RequestMethod.GET)
-	public ResponseEntity<Cliente> find(@RequestParam(value = "value") String email) {
-		Cliente cliente = clienteService.findByEmail(email);
 
-		return ResponseEntity.ok().body(cliente);
+	@RequestMapping(value = "/email", method = RequestMethod.GET)
+	public ResponseEntity<ClienteDTO> find(@RequestParam(value = "value") String email) {
+		ClienteDTO clienteDTO = clienteService.findByEmail(email);
+		return ResponseEntity.ok().body(clienteDTO);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)

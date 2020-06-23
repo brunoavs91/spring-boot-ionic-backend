@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -20,6 +21,8 @@ import javax.persistence.OneToMany;
 import com.bruno.domain.enums.Perfil;
 import com.bruno.domain.enums.TipoCliente;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Cliente implements Serializable{
@@ -37,19 +40,18 @@ public class Cliente implements Serializable{
 	@JsonIgnore
 	private String senha;
 	
-	@OneToMany(mappedBy="cliente",cascade=javax.persistence.CascadeType.ALL)
+	@OneToMany(mappedBy="cliente", cascade = CascadeType.ALL ,orphanRemoval = true)
 	private List<Endereco> enderecos;
 	
 	@ElementCollection
 	@CollectionTable(name="TELEFONE")
 	private Set<String> telefones;
 	
-	@ElementCollection(fetch=FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name="PERFIS")
 	private Set<Integer> perfis = new HashSet<>();
 	
-	@JsonIgnore
-	@OneToMany(mappedBy="cliente")
+	@OneToMany(mappedBy="cliente", fetch = FetchType.LAZY)
 	private List<Pedido> pedidos;
 	
 //	private String imageURL;
@@ -68,11 +70,11 @@ public class Cliente implements Serializable{
 		this.senha= senha;
 		addPerfil(Perfil.CLIENTE);
 	}
-
+	
 	public Long getId() {
 		return id;
 	}
-
+	
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -80,11 +82,12 @@ public class Cliente implements Serializable{
 	public String getNome() {
 		return nome;
 	}
-
+	
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
+	
+	
 	public String getEmail() {
 		return email;
 	}

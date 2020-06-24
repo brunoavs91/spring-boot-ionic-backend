@@ -14,6 +14,7 @@ import com.bruno.dto.CategoriaDTO;
 import com.bruno.repository.CategoriaRepository;
 import com.bruno.service.exception.DataIntegrityException;
 import com.bruno.service.exception.ObjectNotFoundException;
+import com.mysql.cj.conf.ConnectionUrlParser.Pair;
 
 @Service
 public class CategoriaService {
@@ -32,7 +33,7 @@ public class CategoriaService {
 	}
 	
 	public Categoria update(Categoria categoria) {
-
+		
 		Categoria categoriaBanco= find(categoria.getId());
 		
 		atualizarCategoria(categoriaBanco,categoria);

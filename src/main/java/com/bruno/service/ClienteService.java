@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +24,12 @@ import com.bruno.domain.Cidade;
 import com.bruno.domain.Cliente;
 import com.bruno.domain.Endereco;
 import com.bruno.domain.enums.Perfil;
+import com.bruno.domain.enums.TipoCliente;
+import com.bruno.dto.CidadeDTO;
 import com.bruno.dto.ClienteDTO;
 import com.bruno.dto.ClienteNewDTO;
+import com.bruno.dto.EnderecoDTO;
+import com.bruno.dto.EstadoDTO;
 import com.bruno.repository.CidadeRepository;
 import com.bruno.repository.ClienteRepository;
 import com.bruno.repository.EnderecoRepository;
@@ -32,6 +38,8 @@ import com.bruno.service.exception.AuthorizationException;
 import com.bruno.service.exception.DataIntegrityException;
 import com.bruno.service.exception.FileException;
 import com.bruno.service.exception.ObjectNotFoundException;
+
+import io.jsonwebtoken.lang.Collections;
 
 @Service
 public class ClienteService {
@@ -129,8 +137,33 @@ public class ClienteService {
 	}
 
 	public ClienteDTO fromCliente(Cliente cliente) {
+		
+		ClienteDTO clienteDTO = new ClienteDTO();
+		clienteDTO.setEmail(cliente.getEmail());
+		clienteDTO.setId(cliente.getId());
+		clienteDTO.setNome(cliente.getNome());
+		
+		if(!Collections.isEmpty(cliente.getEnderecos())) {
+			clienteDTO.setEnderecos(new ArrayList<>());
+			cliente.getEnderecos().forEach(e ->{
+				EnderecoDTO endDTO = new EnderecoDTO();
+				endDTO.setBairro(e.getBairro());
+				endDTO.setComplemento(e.getComplemento());
+				endDTO.setId(e.getId());
+				endDTO.setLogradouro(e.getLogradouro());
+				endDTO.setNumero(e.getNumero());
+				endDTO.setCep(e.getCep());
+				CidadeDTO cidadeDTO = new CidadeDTO(e.getCidade());
+				EstadoDTO estadoDTO = new EstadoDTO(e.getCidade().getEstado());
+				cidadeDTO.setEstadoDTO(estadoDTO);
+				endDTO.setCidadeDTO(cidadeDTO);
+				clienteDTO.getEnderecos().add(endDTO);
+				
+			});
+		
+		}
 
-		return new ClienteDTO(cliente);
+		return clienteDTO;
 	}
 
 	public Cliente fromDTO(ClienteNewDTO clienteNewDTO) {
@@ -140,9 +173,17 @@ public class ClienteService {
 		Cidade cid = cidadeRepository.findById(clienteNewDTO.getCidadeId()).orElseThrow(null);
 		Endereco end = new Endereco(null, clienteNewDTO.getLogradouro(), clienteNewDTO.getNumero(),
 				clienteNewDTO.getComplemento(), clienteNewDTO.getBairro(), clienteNewDTO.getCep(), clie, cid);
-
+		
+		
+		clie.setCpfOuCnpj(clienteNewDTO.getCpfOuCnpj() != null ? clienteNewDTO.getCpfOuCnpj() : null);
+		clie.setTipo(clienteNewDTO.getTipoCliente() != null ? TipoCliente.toEnum(clienteNewDTO.getTipoCliente()) : null);
+		
+		
+		
+		clie.setEnderecos(new ArrayList<Endereco>());
 		clie.getEnderecos().add(end);
-		clie.getTelefones().add(clienteNewDTO.getTelofone1());
+		clie.setTelefones(new HashSet<>());
+		clie.getTelefones().add(clienteNewDTO.getTelefone1());
 		if (clienteNewDTO.getTelefone2() != null) {
 			clie.getTelefones().add(clienteNewDTO.getTelefone2());
 		}

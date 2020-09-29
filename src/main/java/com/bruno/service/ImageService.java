@@ -30,7 +30,6 @@ public class ImageService {
 
 		try {
 			BufferedImage img = ImageIO.read(uploadFile.getInputStream());
-
 			if ("png".equals(extensao)) {
 				img = pngToJpg(img);
 			}

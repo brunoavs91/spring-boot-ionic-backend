@@ -53,9 +53,9 @@ public class ResourceExceptionHandler {
 	@ExceptionHandler(AuthorizationException.class)
 	public ResponseEntity<StandardError> authorization(AuthorizationException ex, HttpServletRequest request) {
 
-		StandardError erro = new StandardError(System.currentTimeMillis(), HttpStatus.FORBIDDEN.value(), "Acesso Negado", ex.getMessage(), request.getRequestURI());
+		StandardError erro = new StandardError(System.currentTimeMillis(), HttpStatus.UNAUTHORIZED.value(), "Acesso Negado", ex.getMessage(), request.getRequestURI());
 
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(erro);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(erro);
 	}
 	
 	@ExceptionHandler(FileException.class)

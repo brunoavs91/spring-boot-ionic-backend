@@ -1,6 +1,7 @@
 package com.bruno.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -24,6 +25,8 @@ public class ClienteDTO implements Serializable{
 	@NotEmpty(message="Preenchimento obrigatorio")
 	@Email(message="Email Inváldo")
 	private String email;
+	
+	private List<EnderecoDTO> enderecos;
 	
 	public ClienteDTO(Cliente cliente) {
 		id=cliente.getId();
@@ -57,6 +60,14 @@ public class ClienteDTO implements Serializable{
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public List<EnderecoDTO> getEnderecos() {
+		return enderecos;
+	}
+
+	public void setEnderecos(List<EnderecoDTO> enderecos) {
+		this.enderecos = enderecos;
 	}
 	
 	

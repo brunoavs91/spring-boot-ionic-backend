@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter{
 	
 	
+	
 	private JWTUtil jwtUtil;
 	
 	
@@ -31,7 +32,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter{
 		this.jwtUtil = jtwUtil;
 		this.userDetailsService = userDetailsService;
 	}
-	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 

@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.bruno.domain.Cliente;
 import com.bruno.dto.ClienteDTO;
 import com.bruno.dto.ClienteNewDTO;
+import com.bruno.repository.ClienteRepository;
 import com.bruno.service.ClienteService;
 
 @RestController
@@ -31,6 +32,8 @@ public class ClienteResource {
 
 	@Autowired
 	private ClienteService clienteService;
+	@Autowired
+	private ClienteRepository clienteRepository;
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Cliente> find(@PathVariable Long id) {
@@ -40,7 +43,7 @@ public class ClienteResource {
 	}
 
 	@RequestMapping(value = "/email", method = RequestMethod.GET)
-	public ResponseEntity<ClienteDTO> find(@RequestParam(value = "value") String email) {
+	public ResponseEntity find(@RequestParam(value = "value") String email) {
 		ClienteDTO clienteDTO = clienteService.findByEmail(email);
 		return ResponseEntity.ok().body(clienteDTO);
 	}

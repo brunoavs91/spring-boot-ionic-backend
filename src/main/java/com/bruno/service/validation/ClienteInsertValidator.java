@@ -7,6 +7,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import com.bruno.domain.Cliente;
 import com.bruno.domain.enums.TipoCliente;
@@ -29,8 +30,9 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 	public boolean isValid(ClienteNewDTO objDto, ConstraintValidatorContext context) {
 		List<FieldMessage> list = new ArrayList<>();
 
-		
-		if (objDto.getTipoCliente().equals(TipoCliente.PESSOAFISICA) && BR.isValidCPF(objDto.getCpfOuCnpj())) {
+		Integer tipoCliente = Integer.parseInt(objDto.getTipoCliente() != null? objDto.getTipoCliente() : null);
+		if (tipoCliente != null && tipoCliente == (TipoCliente.PESSOAFISICA.getCod()) 
+				&& BR.isValidCPF(objDto.getCpfOuCnpj())) {
 			list.add(new FieldMessage("CpfOuCnpj", "CPF inválido"));
 		}
 		if (objDto.getTipoCliente().equals(TipoCliente.PESSOAJURIDICA) && BR.isValidCNPJ(objDto.getCpfOuCnpj())) {

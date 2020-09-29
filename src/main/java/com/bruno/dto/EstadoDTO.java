@@ -1,8 +1,10 @@
 package com.bruno.dto;
 
+import java.io.Serializable;
+
 import com.bruno.domain.Estado;
 
-public class EstadoDTO {
+public class EstadoDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;

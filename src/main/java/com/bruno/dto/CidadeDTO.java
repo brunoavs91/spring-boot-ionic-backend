@@ -8,6 +8,7 @@ public class CidadeDTO {
 
 	private Long id;
 	private String nome;
+	private EstadoDTO estadoDTO;
 
 	public CidadeDTO() {
 
@@ -32,6 +33,14 @@ public class CidadeDTO {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public EstadoDTO getEstadoDTO() {
+		return estadoDTO;
+	}
+
+	public void setEstadoDTO(EstadoDTO estadoDTO) {
+		this.estadoDTO = estadoDTO;
 	}
 	
 	

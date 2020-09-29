@@ -33,4 +33,16 @@ public enum TipoCliente {
 		}
 		throw new IllegalArgumentException("Id invalido"+cod);
 	}
+	
+	public static TipoCliente toEnum(String cod) {
+		if(cod== null) {
+			return null;
+		}
+		for(TipoCliente t : TipoCliente.values()) {
+			if(Objects.equals(Integer.parseInt(cod), t.getCod())) {
+				return t;
+			}
+		}
+		throw new IllegalArgumentException("Id invalido"+cod);
+	}
 }
